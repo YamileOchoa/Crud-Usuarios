@@ -5,8 +5,7 @@ import TablaUsuarios from '../components/TablaUsuarios'
 import ModalUsuario from '../components/ModalUsuario'
 import './index.css'
 
-const API = 'http://localhost:3000/api/usuarios'
-
+const API = 'https://crud-usuarios-backend-lri9.onrender.com/api/usuarios'
 function App() {
   const [usuarios, setUsuarios] = useState([])
   const [modalAbierto, setModalAbierto] = useState(false)

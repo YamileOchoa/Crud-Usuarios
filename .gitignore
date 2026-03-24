@@ -1,0 +1,36 @@
+# dependencias de node
+node_modules/
+
+# variables de entorno (muy importante para no subir las credenciales de Render)
+.env
+.env.*
+!.env.example
+
+# logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# builds y compilados
+dist
+dist-ssr
+build
+out
+*.tsbuildinfo
+
+# archivos de sistema (mac/windows)
+.DS_Store
+Thumbs.db
+
+# editores y configuraciones locales
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

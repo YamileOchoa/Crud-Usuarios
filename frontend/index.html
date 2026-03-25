@@ -1,147 +1,468 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gestión de Usuarios</title>
-  <link rel="stylesheet" href="index.css">
-  <!-- Incluimos React y ReactDOM desde CDN -->
-  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
-  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-</head>
-<body>
-  <div id="root"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestión de Usuarios</title>
+    <link rel="stylesheet" href="index.css" />
+    <!-- Incluimos React y ReactDOM desde CDN -->
+    <script
+      src="https://unpkg.com/react@18/umd/react.development.js"
+      crossorigin
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+      crossorigin
+    ></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
 
-  <!-- Tu App -->
-  <script type="text/javascript">
-    const { useState, useEffect } = React;
+    <!-- Tu App -->
+    <script type="text/javascript">
+      const { useState, useEffect } = React;
 
-    // TablaUsuarios
-    function TablaUsuarios({ usuarios, onEditar, onEliminar }) {
-      const badgeColor = (rol) => {
-        if (rol === 'admin') return { background: '#EEEDFE', color: '#3C3489' }
-        if (rol === 'editor') return { background: '#E6F1FB', color: '#0C447C' }
-        return { background: '#EAF3DE', color: '#27500A' }
-      }
+      // TablaUsuarios
+      function TablaUsuarios({ usuarios, onEditar, onEliminar }) {
+        const badgeColor = (rol) => {
+          if (rol === "admin")
+            return { background: "#EEEDFE", color: "#3C3489" };
+          if (rol === "editor")
+            return { background: "#E6F1FB", color: "#0C447C" };
+          return { background: "#EAF3DE", color: "#27500A" };
+        };
 
-      const th = {
-        padding: '12px 16px', textAlign: 'left', fontSize: '12px',
-        fontWeight: '600', color: '#64748b', textTransform: 'uppercase'
-      }
-      const td = { padding: '12px 16px' }
-      const btnEditar = {
-        marginRight: '6px', padding: '4px 12px', borderRadius: '6px',
-        border: '1px solid #bcd4f0', background: '#E6F1FB',
-        color: '#0C447C', cursor: 'pointer', fontSize: '12px'
-      }
-      const btnEliminar = {
-        padding: '4px 12px', borderRadius: '6px',
-        border: '1px solid #f7c1c1', background: '#FCEBEB',
-        color: '#A32D2D', cursor: 'pointer', fontSize: '12px'
-      }
+        const th = {
+          padding: "12px 16px",
+          textAlign: "left",
+          fontSize: "12px",
+          fontWeight: "600",
+          color: "#64748b",
+          textTransform: "uppercase",
+        };
+        const td = { padding: "12px 16px" };
+        const btnEditar = {
+          marginRight: "6px",
+          padding: "4px 12px",
+          borderRadius: "6px",
+          border: "1px solid #bcd4f0",
+          background: "#E6F1FB",
+          color: "#0C447C",
+          cursor: "pointer",
+          fontSize: "12px",
+        };
+        const btnEliminar = {
+          padding: "4px 12px",
+          borderRadius: "6px",
+          border: "1px solid #f7c1c1",
+          background: "#FCEBEB",
+          color: "#A32D2D",
+          cursor: "pointer",
+          fontSize: "12px",
+        };
 
-      return React.createElement('div', { style: { background: '#fff', borderRadius: '10px', border: '1px solid #e2e8f0', overflow: 'hidden' } },
-        React.createElement('table', { style: { width: '100%', borderCollapse: 'collapse', fontSize: '14px' } },
-          React.createElement('thead', null,
-            React.createElement('tr', { style: { background: '#f8fafc' } },
-              ['#','Nombre','Email','Teléfono','Edad','Dirección','Rol','Acciones'].map((h,i) =>
-                React.createElement('th', { key:i, style: th }, h)
-              )
-            )
-          ),
-          React.createElement('tbody', null,
-            usuarios.length === 0
-              ? React.createElement('tr', null,
-                  React.createElement('td', { colSpan: 8, style: { textAlign:'center', padding:'2rem', color:'#888' } }, 'No hay usuarios registrados')
-                )
-              : usuarios.map(u =>
-                  React.createElement('tr', { key:u.id, style:{borderTop:'1px solid #f1f5f9'} },
-                    React.createElement('td', { style: td }, u.id),
-                    React.createElement('td', { style: {...td,fontWeight:'500'} }, u.nombre),
-                    React.createElement('td', { style: {...td,color:'#555'} }, u.email),
-                    React.createElement('td', { style: td }, u.telefono),
-                    React.createElement('td', { style: td }, u.edad),
-                    React.createElement('td', { style: {...td,color:'#555'} }, u.direccion),
-                    React.createElement('td', { style: td },
-                      React.createElement('span', { style: {...badgeColor(u.rol), padding:'3px 10px', borderRadius:'20px', fontSize:'12px', fontWeight:'500'} }, u.rol)
+        return React.createElement(
+          "div",
+          {
+            style: {
+              background: "#fff",
+              borderRadius: "10px",
+              border: "1px solid #e2e8f0",
+              overflow: "hidden",
+            },
+          },
+          React.createElement(
+            "table",
+            {
+              style: {
+                width: "100%",
+                borderCollapse: "collapse",
+                fontSize: "14px",
+              },
+            },
+            React.createElement(
+              "thead",
+              null,
+              React.createElement(
+                "tr",
+                { style: { background: "#f8fafc" } },
+                [
+                  "#",
+                  "Nombre",
+                  "Email",
+                  "Teléfono",
+                  "Edad",
+                  "Dirección",
+                  "Rol",
+                  "Acciones",
+                ].map((h, i) =>
+                  React.createElement("th", { key: i, style: th }, h),
+                ),
+              ),
+            ),
+            React.createElement(
+              "tbody",
+              null,
+              usuarios.length === 0
+                ? React.createElement(
+                    "tr",
+                    null,
+                    React.createElement(
+                      "td",
+                      {
+                        colSpan: 8,
+                        style: {
+                          textAlign: "center",
+                          padding: "2rem",
+                          color: "#888",
+                        },
+                      },
+                      "No hay usuarios registrados",
                     ),
-                    React.createElement('td', { style: td },
-                      React.createElement('button', { onClick:()=>onEditar(u), style: btnEditar }, 'Editar'),
-                      React.createElement('button', { onClick:()=>onEliminar(u.id), style: btnEliminar }, 'Eliminar')
-                    )
                   )
-                )
-          )
-        )
-      );
-    }
-
-    // ModalUsuario
-    function ModalUsuario({ usuario, onGuardar, onCerrar }) {
-      const [form, setForm] = useState({ nombre:'', email:'', telefono:'', edad:'', direccion:'', rol:'viewer' });
-
-      useEffect(() => { if(usuario) setForm(usuario); }, [usuario]);
-
-      const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
-      const handleSubmit = () => { if(!form.nombre||!form.email){ alert('Nombre y email obligatorios'); return;} onGuardar(form); }
-
-      return React.createElement('div', { style:{ position:'fixed', inset:0, background:'rgba(0,0,0,0.4)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:100 } },
-        React.createElement('div', { style:{ background:'#fff', borderRadius:'12px', padding:'2rem', width:'100%', maxWidth:'460px', boxShadow:'0 10px 40px rgba(0,0,0,0.15)' } },
-          React.createElement('h2', { style:{ fontSize:'18px', fontWeight:'600', marginBottom:'1.5rem' } }, usuario ? 'Editar Usuario' : 'Nuevo Usuario'),
-          ['nombre','email','telefono','edad','direccion'].map((name,i) =>
-            React.createElement('div', { key:i, style:{marginBottom:'1rem'} },
-              React.createElement('label', { style:{display:'block', fontSize:'12px', color:'#64748b', marginBottom:'4px'} }, name.charAt(0).toUpperCase()+name.slice(1)),
-              React.createElement('input', { type: name==='edad'?'number':'text', name, value: form[name], placeholder:name, onChange: handleChange, style:{width:'100%', padding:'8px 12px', borderRadius:'8px', border:'1px solid #e2e8f0', fontSize:'14px', outline:'none'} })
-            )
+                : usuarios.map((u) =>
+                    React.createElement(
+                      "tr",
+                      { key: u.id, style: { borderTop: "1px solid #f1f5f9" } },
+                      React.createElement("td", { style: td }, u.id),
+                      React.createElement(
+                        "td",
+                        { style: { ...td, fontWeight: "500" } },
+                        u.nombre,
+                      ),
+                      React.createElement(
+                        "td",
+                        { style: { ...td, color: "#555" } },
+                        u.email,
+                      ),
+                      React.createElement("td", { style: td }, u.telefono),
+                      React.createElement("td", { style: td }, u.edad),
+                      React.createElement(
+                        "td",
+                        { style: { ...td, color: "#555" } },
+                        u.direccion,
+                      ),
+                      React.createElement(
+                        "td",
+                        { style: td },
+                        React.createElement(
+                          "span",
+                          {
+                            style: {
+                              ...badgeColor(u.rol),
+                              padding: "3px 10px",
+                              borderRadius: "20px",
+                              fontSize: "12px",
+                              fontWeight: "500",
+                            },
+                          },
+                          u.rol,
+                        ),
+                      ),
+                      React.createElement(
+                        "td",
+                        { style: td },
+                        React.createElement(
+                          "button",
+                          { onClick: () => onEditar(u), style: btnEditar },
+                          "Editar",
+                        ),
+                        React.createElement(
+                          "button",
+                          {
+                            onClick: () => onEliminar(u.id),
+                            style: btnEliminar,
+                          },
+                          "Eliminar",
+                        ),
+                      ),
+                    ),
+                  ),
+            ),
           ),
-          React.createElement('div', { style:{marginBottom:'1.5rem'} },
-            React.createElement('label', { style:{display:'block', fontSize:'12px', color:'#64748b', marginBottom:'4px'} }, 'Rol'),
-            React.createElement('select', { name:'rol', value:form.rol, onChange:handleChange, style:{width:'100%', padding:'8px 12px', borderRadius:'8px', border:'1px solid #e2e8f0', fontSize:'14px', outline:'none', background:'#fff'} },
-              ['admin','editor','viewer'].map(r => React.createElement('option',{key:r,value:r},r))
-            )
+        );
+      }
+
+      // ModalUsuario
+      function ModalUsuario({ usuario, onGuardar, onCerrar }) {
+        const [form, setForm] = useState({
+          nombre: "",
+          email: "",
+          telefono: "",
+          edad: "",
+          direccion: "",
+          rol: "viewer",
+        });
+
+        useEffect(() => {
+          if (usuario) setForm(usuario);
+        }, [usuario]);
+
+        const handleChange = (e) =>
+          setForm({ ...form, [e.target.name]: e.target.value });
+        const handleSubmit = () => {
+          if (!form.nombre || !form.email) {
+            alert("Nombre y email obligatorios");
+            return;
+          }
+          onGuardar(form);
+        };
+
+        return React.createElement(
+          "div",
+          {
+            style: {
+              position: "fixed",
+              inset: 0,
+              background: "rgba(0,0,0,0.4)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              zIndex: 100,
+            },
+          },
+          React.createElement(
+            "div",
+            {
+              style: {
+                background: "#fff",
+                borderRadius: "12px",
+                padding: "2rem",
+                width: "100%",
+                maxWidth: "460px",
+                boxShadow: "0 10px 40px rgba(0,0,0,0.15)",
+              },
+            },
+            React.createElement(
+              "h2",
+              {
+                style: {
+                  fontSize: "18px",
+                  fontWeight: "600",
+                  marginBottom: "1.5rem",
+                },
+              },
+              usuario ? "Editar Usuario" : "Nuevo Usuario",
+            ),
+            ["nombre", "email", "telefono", "edad", "direccion"].map(
+              (name, i) =>
+                React.createElement(
+                  "div",
+                  { key: i, style: { marginBottom: "1rem" } },
+                  React.createElement(
+                    "label",
+                    {
+                      style: {
+                        display: "block",
+                        fontSize: "12px",
+                        color: "#64748b",
+                        marginBottom: "4px",
+                      },
+                    },
+                    name.charAt(0).toUpperCase() + name.slice(1),
+                  ),
+                  React.createElement("input", {
+                    type: name === "edad" ? "number" : "text",
+                    name,
+                    value: form[name],
+                    placeholder: name,
+                    onChange: handleChange,
+                    style: {
+                      width: "100%",
+                      padding: "8px 12px",
+                      borderRadius: "8px",
+                      border: "1px solid #e2e8f0",
+                      fontSize: "14px",
+                      outline: "none",
+                    },
+                  }),
+                ),
+            ),
+            React.createElement(
+              "div",
+              { style: { marginBottom: "1.5rem" } },
+              React.createElement(
+                "label",
+                {
+                  style: {
+                    display: "block",
+                    fontSize: "12px",
+                    color: "#64748b",
+                    marginBottom: "4px",
+                  },
+                },
+                "Rol",
+              ),
+              React.createElement(
+                "select",
+                {
+                  name: "rol",
+                  value: form.rol,
+                  onChange: handleChange,
+                  style: {
+                    width: "100%",
+                    padding: "8px 12px",
+                    borderRadius: "8px",
+                    border: "1px solid #e2e8f0",
+                    fontSize: "14px",
+                    outline: "none",
+                    background: "#fff",
+                  },
+                },
+                ["admin", "editor", "viewer"].map((r) =>
+                  React.createElement("option", { key: r, value: r }, r),
+                ),
+              ),
+            ),
+            React.createElement(
+              "div",
+              {
+                style: {
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  gap: "8px",
+                },
+              },
+              React.createElement(
+                "button",
+                {
+                  onClick: onCerrar,
+                  style: {
+                    padding: "8px 18px",
+                    borderRadius: "8px",
+                    border: "1px solid #e2e8f0",
+                    background: "#fff",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                  },
+                },
+                "Cancelar",
+              ),
+              React.createElement(
+                "button",
+                {
+                  onClick: handleSubmit,
+                  style: {
+                    padding: "8px 18px",
+                    borderRadius: "8px",
+                    border: "none",
+                    background: "#185FA5",
+                    color: "#fff",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                  },
+                },
+                "Guardar",
+              ),
+            ),
           ),
-          React.createElement('div', { style:{display:'flex', justifyContent:'flex-end', gap:'8px'} },
-            React.createElement('button',{ onClick:onCerrar, style:{padding:'8px 18px', borderRadius:'8px', border:'1px solid #e2e8f0', background:'#fff', cursor:'pointer', fontSize:'14px'} }, 'Cancelar'),
-            React.createElement('button',{ onClick:handleSubmit, style:{padding:'8px 18px', borderRadius:'8px', border:'none', background:'#185FA5', color:'#fff', cursor:'pointer', fontSize:'14px'} }, 'Guardar')
-          )
-        )
+        );
+      }
+
+      // App
+      function App() {
+        const API =
+          "https://crud-usuarios-backend-lri9.onrender.com/api/usuarios";
+        const [usuarios, setUsuarios] = useState([]);
+        const [modalAbierto, setModalAbierto] = useState(false);
+        const [usuarioEditando, setUsuarioEditando] = useState(null);
+
+        const cargarUsuarios = async () => {
+          try {
+            const res = await axios.get(API);
+            setUsuarios(res.data);
+          } catch (e) {
+            console.log("Error cargando usuarios", e);
+          }
+        };
+
+        useEffect(() => {
+          cargarUsuarios();
+        }, []);
+
+        const handleNuevo = () => {
+          setUsuarioEditando(null);
+          setModalAbierto(true);
+        };
+        const handleEditar = (u) => {
+          setUsuarioEditando(u);
+          setModalAbierto(true);
+        };
+        const handleEliminar = async (id) => {
+          if (!confirm("Eliminar este usuario?")) return;
+          await axios.delete(`${API}/${id}`);
+          cargarUsuarios();
+        };
+        const handleGuardar = async (datos) => {
+          if (usuarioEditando) {
+            await axios.put(`${API}/${usuarioEditando.id}`, datos);
+          } else {
+            await axios.post(API, datos);
+          }
+          setModalAbierto(false);
+          cargarUsuarios();
+        };
+
+        return React.createElement(
+          "div",
+          {
+            style: {
+              maxWidth: "1100px",
+              margin: "2rem auto",
+              padding: "0 1rem",
+            },
+          },
+          React.createElement(
+            "div",
+            {
+              style: {
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "1.5rem",
+              },
+            },
+            React.createElement(
+              "h1",
+              { style: { fontSize: "24px", fontWeight: "600" } },
+              "Gestión de Usuarios",
+            ),
+            React.createElement(
+              "button",
+              {
+                onClick: handleNuevo,
+                style: {
+                  background: "#185FA5",
+                  color: "#fff",
+                  border: "none",
+                  padding: "8px 18px",
+                  borderRadius: "8px",
+                  cursor: "pointer",
+                  fontSize: "14px",
+                },
+              },
+              "+ Nuevo Usuario",
+            ),
+          ),
+          React.createElement(TablaUsuarios, {
+            usuarios,
+            onEditar: handleEditar,
+            onEliminar: handleEliminar,
+          }),
+          modalAbierto &&
+            React.createElement(ModalUsuario, {
+              usuario: usuarioEditando,
+              onGuardar: handleGuardar,
+              onCerrar: () => setModalAbierto(false),
+            }),
+        );
+      }
+
+      // Render App
+      ReactDOM.createRoot(document.getElementById("root")).render(
+        React.createElement(App),
       );
-    }
-
-    // App
-    function App() {
-      const API = 'http://localhost:3000/api/usuarios';
-      const [usuarios,setUsuarios] = useState([]);
-      const [modalAbierto,setModalAbierto] = useState(false);
-      const [usuarioEditando,setUsuarioEditando] = useState(null);
-
-      const cargarUsuarios = async () => {
-        try {
-          const res = await axios.get(API);
-          setUsuarios(res.data);
-        } catch(e){ console.log('Error cargando usuarios',e); }
-      };
-
-      useEffect(()=>{ cargarUsuarios(); },[]);
-
-      const handleNuevo = ()=>{ setUsuarioEditando(null); setModalAbierto(true); }
-      const handleEditar = (u)=>{ setUsuarioEditando(u); setModalAbierto(true); }
-      const handleEliminar = async (id)=>{ if(!confirm('Eliminar este usuario?')) return; await axios.delete(`${API}/${id}`); cargarUsuarios(); }
-      const handleGuardar = async (datos)=>{ if(usuarioEditando){ await axios.put(`${API}/${usuarioEditando.id}`,datos);}else{ await axios.post(API,datos);} setModalAbierto(false); cargarUsuarios(); }
-
-      return React.createElement('div',{style:{maxWidth:'1100px',margin:'2rem auto',padding:'0 1rem'}},
-        React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'1.5rem'}},
-          React.createElement('h1',{style:{fontSize:'24px',fontWeight:'600'}},'Gestión de Usuarios'),
-          React.createElement('button',{onClick:handleNuevo, style:{background:'#185FA5',color:'#fff',border:'none',padding:'8px 18px',borderRadius:'8px',cursor:'pointer',fontSize:'14px'}},'+ Nuevo Usuario')
-        ),
-        React.createElement(TablaUsuarios,{usuarios, onEditar:handleEditar, onEliminar:handleEliminar}),
-        modalAbierto && React.createElement(ModalUsuario,{usuario:usuarioEditando, onGuardar:handleGuardar, onCerrar:()=>setModalAbierto(false)})
-      );
-    }
-
-    // Render App
-    ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));
-  </script>
-</body>
+    </script>
+  </body>
 </html>

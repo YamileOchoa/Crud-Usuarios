@@ -1,121 +1,205 @@
-import { useState, useEffect } from 'react'
-import axios from 'axios'
-import Buscador from '../components/Buscador'
-import TablaUsuarios from '../components/TablaUsuarios'
-import ModalUsuario from '../components/ModalUsuario'
-import './index.css'
+import { useState, useEffect } from "react";
+import axios from "axios";
+import Buscador from "../components/Buscador";
+import TablaUsuarios from "../components/TablaUsuarios";
+import ModalUsuario from "../components/ModalUsuario";
+import "./index.css";
 
-const API = 'https://crud-usuarios-backend-lri9.onrender.com/api/usuarios'
+const API = "https://crud-usuarios-backend-lri9.onrender.com/api/usuarios";
+
 function App() {
-  const [usuarios, setUsuarios] = useState([])
-  const [modalAbierto, setModalAbierto] = useState(false)
-  const [usuarioEditando, setUsuarioEditando] = useState(null)
-  const [buscando, setBuscando] = useState(false)
+  const [usuarios, setUsuarios] = useState([]);
+  const [modalAbierto, setModalAbierto] = useState(false);
+  const [usuarioEditando, setUsuarioEditando] = useState(null);
+  const [buscando, setBuscando] = useState(false);
 
-  const cargarUsuarios = async (q = '') => {
+  const cargarUsuarios = async (q = "") => {
     try {
-      setBuscando(true)
-      const res = await axios.get(`${API}?q=${q}`)
-      setUsuarios(res.data)
+      setBuscando(true);
+      const res = await axios.get(`${API}?q=${q}`);
+      setUsuarios(res.data);
     } catch (error) {
-      console.error('Error cargando usuarios:', error)
+      console.error("Error cargando usuarios:", error);
     } finally {
-      setBuscando(false)
+      setBuscando(false);
     }
-  }
+  };
 
   useEffect(() => {
-    cargarUsuarios()
-  }, [])
+    cargarUsuarios();
+  }, []);
 
   const handleNuevo = () => {
-    setUsuarioEditando(null)
-    setModalAbierto(true)
-  }
-
-  const handleEditar = (usuario) => {
-    setUsuarioEditando(usuario)
-    setModalAbierto(true)
-  }
+    setUsuarioEditando(null);
+    setModalAbierto(true);
+  };
+  const handleEditar = (u) => {
+    setUsuarioEditando(u);
+    setModalAbierto(true);
+  };
 
   const handleEliminar = async (id) => {
-    if (!confirm('¿Estás seguro de que deseas eliminar este usuario? (Eliminado lógico)')) return
+    if (!confirm("¿Eliminar este usuario? (Eliminado lógico)")) return;
     try {
-      await axios.delete(`${API}/${id}`)
-      cargarUsuarios() // Recargamos para reflejar el estado oculto
-    } catch (error) {
-      alert('Hubo un error al eliminar el usuario')
+      await axios.delete(`${API}/${id}`);
+      cargarUsuarios();
+    } catch {
+      alert("Hubo un error al eliminar el usuario");
     }
-  }
+  };
 
   const handleGuardar = async (datos) => {
     try {
       if (usuarioEditando) {
-        await axios.put(`${API}/${usuarioEditando.id}`, datos)
+        await axios.put(`${API}/${usuarioEditando.id}`, datos);
       } else {
-        await axios.post(API, datos)
+        await axios.post(API, datos);
       }
-      setModalAbierto(false)
-      cargarUsuarios()
+      setModalAbierto(false);
+      cargarUsuarios();
     } catch (error) {
-      if (error.response?.data?.error) {
-        alert(error.response.data.error)
-      } else {
-        alert('Ocurrió un error al guardar.')
-      }
+      alert(error.response?.data?.error || "Ocurrió un error al guardar.");
     }
-  }
-
-  const handleBuscar = (q) => {
-    cargarUsuarios(q)
-  }
+  };
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '3rem auto', padding: '0 2rem' }}>
-      {/* Header section */}
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '20px',
-        marginBottom: '2rem'
-      }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div>
-            <h1 style={{ fontSize: '28px', fontWeight: '700', color: 'var(--text-main)', letterSpacing: '-0.5px' }}>
-              Gestión de Usuarios
-            </h1>
-            <p style={{ color: 'var(--text-muted)', fontSize: '15px', marginTop: '4px' }}>
-              Administra tu base de datos de usuarios fácilmente.
-            </p>
+    <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "3rem 2rem" }}>
+      {/* ── HEADER ── */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          marginBottom: "2.5rem",
+        }}
+      >
+        <div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              marginBottom: "6px",
+            }}
+          >
+            {/* small purple dot accent */}
+            <div
+              style={{
+                width: "8px",
+                height: "8px",
+                borderRadius: "50%",
+                background: "var(--primary)",
+                boxShadow: "0 0 10px var(--primary)",
+              }}
+            />
+            <span
+              style={{
+                fontFamily: "'DM Mono', monospace",
+                fontSize: "11px",
+                color: "var(--text-muted)",
+                letterSpacing: "2px",
+                textTransform: "uppercase",
+              }}
+            >
+              Sistema de gestión
+            </span>
           </div>
-          <button onClick={handleNuevo} style={{
-            background: 'var(--primary)',
-            color: '#fff',
-            border: 'none',
-            padding: '12px 24px',
-            borderRadius: 'var(--radius)',
-            cursor: 'pointer',
-            fontSize: '15px',
-            fontWeight: '600',
-            boxShadow: 'var(--shadow-md)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}>
-            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-            </svg>
-            Nuevo Usuario
-          </button>
+          <h1
+            style={{
+              fontSize: "30px",
+              fontWeight: "800",
+              color: "var(--text-main)",
+              letterSpacing: "-1px",
+            }}
+          >
+            Usuarios
+          </h1>
+          <p
+            style={{
+              color: "var(--text-muted)",
+              fontSize: "14px",
+              marginTop: "4px",
+              fontFamily: "'DM Mono', monospace",
+            }}
+          >
+            {usuarios.length} registro{usuarios.length !== 1 ? "s" : ""} en
+            total
+          </p>
         </div>
 
-        {/* Filter/Search Bar Section */}
-        <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', paddingBottom: '1rem', borderBottom: '1px solid var(--border-color)' }}>
-          <Buscador onBuscar={handleBuscar} />
+        <button
+          onClick={handleNuevo}
+          style={{
+            background: "var(--primary)",
+            color: "#fff",
+            border: "none",
+            padding: "11px 22px",
+            borderRadius: "var(--radius-sm)",
+            fontSize: "14px",
+            fontWeight: "700",
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+            boxShadow: "0 0 20px var(--primary-glow)",
+            letterSpacing: "0.3px",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "var(--primary-hover)";
+            e.currentTarget.style.transform = "translateY(-1px)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "var(--primary)";
+            e.currentTarget.style.transform = "translateY(0)";
+          }}
+        >
+          <svg
+            width="16"
+            height="16"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2.5}
+              d="M12 6v12M6 12h12"
+            />
+          </svg>
+          Nuevo Usuario
+        </button>
+      </div>
+
+      {/* ── TOOLBAR ── */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          paddingBottom: "1.25rem",
+          borderBottom: "1px solid var(--border-color)",
+          marginBottom: "1.5rem",
+        }}
+      >
+        <Buscador onBuscar={(q) => cargarUsuarios(q)} />
+
+        {/* count chip */}
+        <div
+          style={{
+            background: "var(--primary-dim)",
+            color: "var(--primary)",
+            border: "1px solid var(--border-purple)",
+            borderRadius: "4px",
+            fontFamily: "'DM Mono', monospace",
+            fontSize: "12px",
+            padding: "4px 12px",
+          }}
+        >
+          {usuarios.length} usuarios
         </div>
       </div>
 
-      {/* Main Table Content */}
+      {/* ── TABLE ── */}
       <TablaUsuarios
         usuarios={usuarios}
         onEditar={handleEditar}
@@ -123,6 +207,7 @@ function App() {
         cargando={buscando}
       />
 
+      {/* ── MODAL ── */}
       {modalAbierto && (
         <ModalUsuario
           usuario={usuarioEditando}
@@ -131,7 +216,7 @@ function App() {
         />
       )}
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
